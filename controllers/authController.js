@@ -2,7 +2,7 @@ import userModel from '../models/userModel.js';
 
 export const registerController = async (req, res, next) => {
   const { name, lastName, email, password, adresse } = req.body;
-  validate;
+  //validate;
   if (!name) {
     next('name is required');
   }
