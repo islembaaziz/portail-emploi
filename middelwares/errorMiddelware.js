@@ -1,12 +1,16 @@
 //error middelware || NEXT function
 const erroMiddelware = (err, req, res, next) => {
   console.log(err);
-  const defaultError = {
+  const defaultErrors = {
     statusCode : 500,
-    message: 'Somthing went wrong'
+    message: err,
   }
  // missing filed error
- if(err.name === 'ValidationError') 
+ if(err.name === 'ValidationError') {
+    defaultErrors.statusCode = 400
+    defaultErrors.message = Object.values(err.errors).map(item => item.message).join(',')
+ }
+ res.status(defaultErrors.statusCode).json({message: defaultErrors.message});
 };
 
 
