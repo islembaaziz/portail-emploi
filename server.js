@@ -8,9 +8,12 @@ import 'express-async-errors';
 import connectDB from './config/db.js';
 //routes import
 import testRoutes from './routes/testRoutes.js';
-import authRoutes from './routes/authRoutes.js'
-import erroMiddelware from './middelwares/errorMiddelware.js'
-import userRoutes from './routes/userRoutes.js'
+import authRoutes from './routes/authRoutes.js';
+import errorMiddelware from './middelwares/errorMiddelware.js';
+import userRoutes from './routes/userRoutes.js';
+import roleRoutes from './routes/roleRoutes.js';
+import jobsRoutes from './routes/jobsRoute.js';
+
 
 //Dotenv config
 dotenv.config();
@@ -30,15 +33,18 @@ app.use(morgan('dev'));
 app.use('/api/v1/test', testRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/role', roleRoutes);
+app.use('/api/v1/job', jobsRoutes);
+
 
 //validation middelware
-app.use(erroMiddelware);
+app.use(errorMiddelware);
 
 //port
 const PORT = process.env.PORT || 8080;
 
 //listen
-app.listen(8080, () => {
+app.listen(PORT, () => {
   console.log(
     `Node Server Running In ${process.env.DEV_MODE} on port : ${PORT} `
   );

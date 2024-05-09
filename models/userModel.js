@@ -2,8 +2,10 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import JWT from 'jsonwebtoken';
+import Role from './roleModel.js';
 
 //schema
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -23,16 +25,16 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Password is Required'],
-    },
-    password: {
-      type: String,
-      required: [true, 'Password is Required'],
       minLength: [6, 'Password length should be greater than 6 charachter'],
       select: true,
     },
     adresse: {
       type: String,
       required: [true, 'Adresse is Required'],
+    },
+    role: {
+      type: String,
+      ref :"Role",
     },
   },
   { timestamps: true }
@@ -46,15 +48,15 @@ userSchema.pre("save", async function () {
 });
 
 //compare password
-userSchema.methods.comparePassword = async function(userPassword) {
+userSchema.methods.comparePassword = async function (userPassword) {
   const isMatch = await bcrypt.compare(userPassword, this.password);
   return isMatch;
 };
 
-// JWT
+//JSON WEBTOKEN
 userSchema.methods.createJWT = function () {
   return JWT.sign({ userId: this._id }, process.env.JWT_SECRET, {
-    expiresIn: '1d',
+    expiresIn: "1d",
   });
 };
 

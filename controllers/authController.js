@@ -1,7 +1,11 @@
 import userModel from '../models/userModel.js';
 
 export const registerController = async (req, res, next) => {
-  const { name, lastName, email, password, adresse } = req.body;
+  const { name, lastName, email, password, adresse, role } = req.body;
+   // Check if the user is an admin
+   if (req.user.role !== 'Admin') {
+    return res.status(403).json({ message: 'Unauthorized' });
+  }
   //validate;
   if (!name) {
     next('name is required');
@@ -18,6 +22,9 @@ export const registerController = async (req, res, next) => {
   if (!adresse) {
     next('adresse is required');
   }
+  if (!role) {
+    next('role is required');
+  }
   const existingUser = await userModel.findOne({ email });
   if (existingUser) {
     next(' Email Already Used Please Login');
@@ -28,6 +35,7 @@ export const registerController = async (req, res, next) => {
     email,
     password,
     adresse,
+    role,
   });
   //token
   const token = user.createJWT();
@@ -39,6 +47,7 @@ export const registerController = async (req, res, next) => {
       lastName: user.lastName,
       email: user.email,
       adresse: user.adresse,
+      role: user.role,
     },
     token,
   });

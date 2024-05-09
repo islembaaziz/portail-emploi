@@ -2,16 +2,14 @@ import express from 'express';
 import {
   registerController,
   loginController,
-} from '../controllers/authCOntroller.js';
+} from '../controllers/authController.js';
+import userAuth from '../middelwares/authMiddelware.js'; // Corrected import path
 
-//router object
 const router = express.Router();
 
-//------------routes---------------
-//REGISTER || POST
-router.post('/register', registerController);
-// LOGIN || POST
+// Register route with userAuth middleware
+router.post('/register', userAuth, registerController);
+// Login route
 router.post('/login', loginController);
 
-//export
 export default router;
