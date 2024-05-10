@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
 import 'express-async-errors';
+//security packages
+import helmet from 'helmet'
+import mongoSanitize from 'express-mongo-sanitize';
 //files import
 import connectDB from './config/db.js';
 //routes import
@@ -25,6 +28,8 @@ connectDB();
 const app = express();
 
 //middelwares
+app.use(helmet());
+app.use(mongoSanitize());
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));

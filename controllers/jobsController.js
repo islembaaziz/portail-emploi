@@ -1,12 +1,9 @@
 import jobsModel from "../models/jobsModel.js";
 import mongoose from "mongoose";
 import moment from "moment";
+
 // ====== CREATE JOB ======
 export const createJobController = async (req, res, next) => {
-  // Check if the user is an admin
-  if (req.user.role !== 'Admin') {
-    return res.status(403).json({ message: 'Unauthorized' });
-  }
   const { company, position } = req.body;
   if (!company || !position) {
     next("Please Provide All Fields");
@@ -56,14 +53,14 @@ export const getAllJobsController = async (req, res, next) => {
 
   queryResult = queryResult.skip(skip).limit(limit);
   //jobs count
-  const totalJobs = await jobsModel.countDocuments(queryResult);
-  const numOfPage = Math.ceil(totalJobs / limit);
+  const totalJobsStatus = await jobsModel.countDocuments(queryResult);
+  const numOfPage = Math.ceil(totalJobsStatus / limit);
 
   const jobs = await queryResult;
 
   // const jobs = await jobsModel.find({ createdBy: req.user.userId });
   res.status(200).json({
-    totalJobs,
+    totalJobsStatus,
     jobs,
     numOfPage,
   });
@@ -115,7 +112,6 @@ export const deleteJobController = async (req, res, next) => {
 // =======  JOBS STATS & FILTERS ===========
 export const jobStatsController = async (req, res) => {
   const stats = await jobsModel.aggregate([
-    // search by user jobs
     {
       $match: {
         createdBy: new mongoose.Types.ObjectId(req.user.userId),
@@ -129,15 +125,24 @@ export const jobStatsController = async (req, res) => {
     },
   ]);
 
-  //default stats
+  // Constructing defaultStats object
   const defaultStats = {
-    pending: stats.pending || 0,
-    reject: stats.reject || 0,
-    interview: stats.interview || 0,
+    pending: 0,
+    reject: 0,
+    interview: 0,
   };
 
-  //monthly yearly stats
-  let monthlyApplication = await jobsModel.aggregate([
+  stats.forEach((stat) => {
+    if (stat._id === "pending") {
+      defaultStats.pending = stat.count;
+    } else if (stat._id === "reject") {
+      defaultStats.reject = stat.count;
+    } else if (stat._id === "interview") {
+      defaultStats.interview = stat.count;
+    }
+  });
+   //monthly yearly stats
+   let monthlyApplication = await jobsModel.aggregate([
     {
       $match: {
         createdBy: new mongoose.Types.ObjectId(req.user.userId),
@@ -168,7 +173,7 @@ export const jobStatsController = async (req, res) => {
       return { date, count };
     })
     .reverse();
-  res
-    .status(200)
-    .json({ totlaJob: stats.length, defaultStats, monthlyApplication });
+
+  res.status(200).json({ totalJobsStatus: stats.length, defaultStats, monthlyApplication });
 };
+ 
