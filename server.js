@@ -5,7 +5,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import 'express-async-errors';
 //security packages
-import helmet from 'helmet'
+import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 //files import
 import connectDB from './config/db.js';
@@ -17,12 +17,12 @@ import userRoutes from './routes/userRoutes.js';
 import roleRoutes from './routes/roleRoutes.js';
 import jobsRoutes from './routes/jobsRoute.js';
 
-
 //Dotenv config
 dotenv.config();
 
 // mongodb connection
 connectDB();
+
 
 //rest object
 const app = express();

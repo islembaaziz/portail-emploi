@@ -20,6 +20,7 @@ const router = express.Router();
 
 // Register route with userAuth middleware || POST
 router.post('/register', userAuth, limiter, registerController);
+
 // Login route || POST
 router.post('/login', limiter, loginController);
 

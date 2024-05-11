@@ -57,17 +57,17 @@ export const loginController = async (req, res, next) => {
   const { email, password } = req.body;
   //Validation
   if (!email || !password) {
-    next('Please Provide All Fields');
+    return next('Please Provide All Fields');
   }
   // find user by email
   const user = await userModel.findOne({ email }).select("+password");
   if (!user) {
-    next('Invalid Username or password');
+    return next('Invalid Username or password');
   }
   //compare password
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    next('Invalid Username or password');
+    return next('Invalid Username or password');
   }
   user.password = undefined;
   const token = user.createJWT();
