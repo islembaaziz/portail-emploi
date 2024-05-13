@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { showLoading, hideLoading } from "../../redux/features/alertSlice";
 import axios from "axios";
 import { setUser } from "../../redux/features/auth/authSlice";
+import { API } from "../../constant";
 
 import { Navigate } from "react-router-dom";
 
@@ -14,7 +15,7 @@ const PrivateRoute = ({ children }) => {
     try {
       dispatch(showLoading());
       const { data } = await axios.post(
-        "/api/v1/user/getUser",
+        `${API}/user/getUser`,
         { token: localStorage.getItem("token") },
         {
           headers: {
@@ -27,14 +28,16 @@ const PrivateRoute = ({ children }) => {
         dispatch(setUser(data.data));
       } else {
         localStorage.clear();
-        <Navigate to="/login" />;
+        return <Navigate to="/login" />;
       }
     } catch (error) {
       localStorage.clear();
       dispatch(hideLoading());
       console.log(error);
+      return <Navigate to="/login" />;
     }
   };
+
   useEffect(() => {
     if (!user) {
       getUser();

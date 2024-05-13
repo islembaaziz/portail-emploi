@@ -21,7 +21,7 @@ function App() {
       <Router>
         <div className="App">
           <NavBar />
-          <div className="content">
+          <div className="mt-14">
             <Routes>
               <Route
                 path="/"

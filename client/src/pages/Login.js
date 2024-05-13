@@ -22,7 +22,10 @@ const Login = () => {
     e.preventDefault();
     // Validation
     if (!email.trim()) {
-      setErrors((prevState) => ({ ...prevState, email: 'Email est obligatoire !' }));
+      setErrors((prevState) => ({
+        ...prevState,
+        email: 'Email est obligatoire !',
+      }));
       return;
     }
     if (!password.trim()) {
@@ -40,9 +43,11 @@ const Login = () => {
       });
       if (data.success) {
         dispatch(hideLoading());
+        console.log(data.token);
         localStorage.setItem('token', data.token);
         toast.success('Connecté avec succès ');
         navigate('/');
+        window.location.reload();
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -91,7 +96,9 @@ const Login = () => {
                             name="email"
                             className="mb-4 rounded-md w-full border-solid border-2  border-gray-400 "
                           />
-                           {errors.email && <p className="text-red-500">{errors.email}</p>}
+                          {errors.email && (
+                            <p className="text-red-500">{errors.email}</p>
+                          )}
                           {/* <!--Password input--> */}
                           <input
                             type="password"
@@ -109,7 +116,9 @@ const Login = () => {
                               errors.password ? 'border-red-500' : ''
                             }`}
                           />
-                          {errors.password && <p className="text-red-500">{errors.password}</p>}
+                          {errors.password && (
+                            <p className="text-red-500">{errors.password}</p>
+                          )}
                           {/* <!--Submit button--> */}
                           <div className="mb-12 pb-1 pt-1 text-center">
                             <button
