@@ -1,28 +1,51 @@
 import React from 'react';
+import {
+  MapPinIcon,
+  DocumentIcon,
+  ChevronRightIcon,
+  BuildingLibraryIcon,
+} from '@heroicons/react/24/outline';
 
 const Card = ({ job }) => {
-    
     return (
-        <div className="bg-zinc-100 hover:bg-white shadow-md rounded-lg p-6 m-4 w-80 flex flex-col">
-            <h2 className="text-xl font-semibold mb-2">{job.position}</h2>
-            <p className="text-gray-600 mb-2">{job.company}</p>
-            <div className="mb-4">
-                <p className="text-gray-700 font-semibold mb-1">Description :</p>
-                <p className="text-gray-700 flex-grow">{job.description}</p>
-            </div>
-            <div className="flex justify-between mb-4">
-                <div>
-                    <p className="text-gray-700 font-semibold mb-1">Location :</p>
-                    <p className="text-gray-500">{job.workLocation}</p>
-                </div>
-                <div>
-                    <p className="text-gray-700 font-semibold mb-1">Type :</p>
-                    <p className="text-gray-500">{job.workType}</p>
-                </div>
-            </div>
-            <button className='w-full bg-black text-white font-bold rounded-xl p-2'>Apply</button>
+      <div
+        key={job._id}
+        className="bg-zinc-100 hover:bg-slate-100 shadow-md rounded-lg p-6 m-4 w-full flex flex-col"
+      >
+      
+        <div className="flex items-center mb-2">
+          <BuildingLibraryIcon className="h-6 w-6" aria-hidden="true" />
+          <p className="bg-gradient-to-r from-orange-500 via-red-600 to-purple-700 text-xl text-transparent bg-clip-text font-bold">
+            {job.company}
+          </p>
         </div>
+        <div className="flex items-center mb-2">
+          <ChevronRightIcon className="h-6 w-6" aria-hidden="true" />
+          <h2 className="text-xl font-semibold ">{job.position}</h2>
+        </div>
+        <div className="mb-4">
+          <p className="text-gray-700 font-semibold mb-1">Description :</p>
+          <p className="text-gray-700 flex-grow">{job.description}</p>
+        </div>
+        <div className="flex justify-between mb-4">
+          <div className="flex justify-between items-center gap-2">
+            <MapPinIcon className="h-6 w-6" aria-hidden="true" />
+            <p className="text-gray-700 font-semibold">Location /</p>
+            <p className="text-gray-500">{job.workLocation}</p>
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <DocumentIcon className="h-6 w-6" aria-hidden="true" />
+            <p className="text-gray-700 font-semibold ">Type /</p>
+            <p className="text-gray-500">{job.workType}</p>
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <button className="bg-black text-white w-1/3 font-bold rounded-xl p-2">
+            Apply
+          </button>
+        </div>
+      </div>
     );
-};
-
-export default Card;
+  };
+  
+  export default Card;

@@ -4,164 +4,186 @@ import moment from "moment";
 
 // ====== CREATE JOB ======
 export const createJobController = async (req, res, next) => {
-  const { company, position } = req.body;
-  if (!company || !position) {
-    next("Please Provide All Fields");
+  try {
+    const { company, position } = req.body;
+    if (!company || !position) {
+      throw new Error("Please provide all fields");
+    }
+    req.body.createdBy = req.body.user.userId;
+    const job = await jobsModel.create(req.body);
+    res.status(201).json({ job });
+  } catch (error) {
+    next(error);
   }
-  req.body.createdBy = req.user.userId;
-  const job = await jobsModel.create(req.body);
-  res.status(201).json({ job });
 };
 
 // ======= GET JOBS ===========
 export const getAllJobsController = async (req, res, next) => {
-  const { status, workType, search, sort } = req.query;
-  //conditons for searching filters
-  const queryObject = {
-    createdBy: req.user.userId,
-  };
-  //logic filters
-  if (status && status !== "all") {
-    queryObject.status = status;
-  }
-  if (workType && workType !== "all") {
-    queryObject.workType = workType;
-  }
-  if (search) {
-    queryObject.position = { $regex: search, $options: "i" };
-  }
+  try {
+    if (!req.body.user || !req.body.user.userId) {
+      throw new Error("User not authenticated");
+    }
 
-  let queryResult = jobsModel.find(queryObject);
+    const { status, workType, search, sort } = req.query;
 
-  //sorting
-  if (sort === "latest") {
-    queryResult = queryResult.sort("-createdAt");
-  }
-  if (sort === "oldest") {
-    queryResult = queryResult.sort("createdAt");
-  }
-  if (sort === "a-z") {
-    queryResult = queryResult.sort("position");
-  }
-  if (sort === "z-a") {
-    queryResult = queryResult.sort("-position");
-  }
-  //pagination
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
+    const queryObject = {
+      createdBy: req.body.user.userId,
+    };
 
-  queryResult = queryResult.skip(skip).limit(limit);
-  //jobs count
-  const totalJobsStatus = await jobsModel.countDocuments(queryResult);
-  const numOfPage = Math.ceil(totalJobsStatus / limit);
+    if (status && status !== "all") {
+      queryObject.status = status;
+    }
+    if (workType && workType !== "all") {
+      queryObject.workType = workType;
+    }
+    if (search) {
+      queryObject.position = { $regex: search, $options: "i" };
+    }
 
-  const jobs = await queryResult;
+    let queryResult = jobsModel.find(queryObject);
 
-  // const jobs = await jobsModel.find({ createdBy: req.user.userId });
-  res.status(200).json({
-    totalJobsStatus,
-    jobs,
-    numOfPage,
-  });
+    if (sort === "latest") {
+      queryResult = queryResult.sort("-createdAt");
+    } else if (sort === "oldest") {
+      queryResult = queryResult.sort("createdAt");
+    } else if (sort === "a-z") {
+      queryResult = queryResult.sort("position");
+    } else if (sort === "z-a") {
+      queryResult = queryResult.sort("-position");
+    }
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    queryResult = queryResult.skip(skip).limit(limit);
+
+    const totalJobsStatus = await jobsModel.countDocuments(queryObject);
+    const numOfPage = Math.ceil(totalJobsStatus / limit);
+
+    const jobs = await queryResult;
+
+    res.status(200).json({
+      totalJobsStatus,
+      jobs,
+      numOfPage,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // ======= UPDATE JOBS ===========
 export const updateJobController = async (req, res, next) => {
-  const { id } = req.params;
-  const { company, position } = req.body;
-  //validation
-  if (!company || !position) {
-    next("Please Provide All Fields");
+  try {
+    const { id } = req.params;
+    const { company, position } = req.body;
+
+    if (!company || !position) {
+      throw new Error("Please provide all fields");
+    }
+
+    const job = await jobsModel.findById(id);
+
+    if (!job) {
+      throw new Error(`No job found with ID: ${id}`);
+    }
+
+    if (req.body.user.userId !== job.createdBy.toString()) {
+      throw new Error("You are not authorized to update this job");
+    }
+
+    const updatedJob = await jobsModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({ updatedJob });
+  } catch (error) {
+    next(error);
   }
-  //find job
-  const job = await jobsModel.findOne({ _id: id });
-  //validation
-  if (!job) {
-    next(`no jobs found with this id ${id}`);
-  }
-  if (!req.user.userId === job.createdBy.toString()) {
-    next("Your Not Authorized to update this job");
-    return;
-  }
-  const updateJob = await jobsModel.findOneAndUpdate({ _id: id }, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  //res
-  res.status(200).json({ updateJob });
 };
 
 // ======= DELETE JOBS ===========
 export const deleteJobController = async (req, res, next) => {
-  const { id } = req.params;
-  //find job
-  const job = await jobsModel.findOne({ _id: id });
-  //validation
-  if (!job) {
-    next(`No Job Found With This ID ${id}`);
+  try {
+    const { id } = req.params;
+
+    const job = await jobsModel.findById(id);
+
+    if (!job) {
+      throw new Error(`No job found with ID: ${id}`);
+    }
+
+    if (req.body.user.userId !== job.createdBy.toString()) {
+      throw new Error("You are not authorized to delete this job");
+    }
+
+    await job.deleteOne();
+    
+    res.status(200).json({ message: "Success, Job Deleted!" });
+  } catch (error) {
+    next(error);
   }
-  if (!req.user.userId === job.createdBy.toString()) {
-    next("Your Not Authorize to delete this job");
-    return;
-  }
-  await job.deleteOne();
-  res.status(200).json({ message: "Success, Job Deleted!" });
 };
 
 // =======  JOBS STATS & FILTERS ===========
-export const jobStatsController = async (req, res) => {
-  const stats = await jobsModel.aggregate([
-    {
-      $match: {
-        createdBy: new mongoose.Types.ObjectId(req.user.userId),
-      },
-    },
-    {
-      $group: {
-        _id: "$status",
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-
-  // Constructing defaultStats object
-  const defaultStats = {
-    pending: 0,
-    reject: 0,
-    interview: 0,
-  };
-
-  stats.forEach((stat) => {
-    if (stat._id === "pending") {
-      defaultStats.pending = stat.count;
-    } else if (stat._id === "reject") {
-      defaultStats.reject = stat.count;
-    } else if (stat._id === "interview") {
-      defaultStats.interview = stat.count;
+export const jobStatsController = async (req, res, next) => {
+  try {
+    if (!req.body.user || !req.body.user.userId) {
+      throw new Error("User not authenticated");
     }
-  });
-   //monthly yearly stats
-   let monthlyApplication = await jobsModel.aggregate([
-    {
-      $match: {
-        createdBy: new mongoose.Types.ObjectId(req.user.userId),
-      },
-    },
-    {
-      $group: {
-        _id: {
-          year: { $year: "$createdAt" },
-          month: { $month: "$createdAt" },
-        },
-        count: {
-          $sum: 1,
+
+    const stats = await jobsModel.aggregate([
+      {
+        $match: {
+          createdBy: mongoose.Types.ObjectId(req.body.user.userId),
         },
       },
-    },
-  ]);
-  monthlyApplication = monthlyApplication
-    .map((item) => {
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const defaultStats = {
+      pending: 0,
+      reject: 0,
+      interview: 0,
+    };
+
+    stats.forEach((stat) => {
+      if (stat._id === "pending") {
+        defaultStats.pending = stat.count;
+      } else if (stat._id === "reject") {
+        defaultStats.reject = stat.count;
+      } else if (stat._id === "interview") {
+        defaultStats.interview = stat.count;
+      }
+    });
+
+    let monthlyApplication = await jobsModel.aggregate([
+      {
+        $match: {
+          createdBy: mongoose.Types.ObjectId(req.body.user.userId),
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
+
+    monthlyApplication = monthlyApplication.map((item) => {
       const {
         _id: { year, month },
         count,
@@ -171,9 +193,10 @@ export const jobStatsController = async (req, res) => {
         .year(year)
         .format("MMM Y");
       return { date, count };
-    })
-    .reverse();
+    }).reverse();
 
-  res.status(200).json({ totalJobsStatus: stats.length, defaultStats, monthlyApplication });
+    res.status(200).json({ totalJobsStatus: stats.length, defaultStats, monthlyApplication });
+  } catch (error) {
+    next(error);
+  }
 };
- 

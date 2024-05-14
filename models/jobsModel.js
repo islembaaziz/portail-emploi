@@ -28,7 +28,7 @@ const jobSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      default: "Djerba",
+      default: "Djeruyiuba",
       required: [true, "Job description is required"],
     },
     date: {

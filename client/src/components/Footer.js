@@ -4,7 +4,7 @@ import logo from '../assets/Portail-emploi.png'
 const Footer = () => {
   return (
     <div>
-      <footer className="flex flex-col items-center bg-zinc-50 text-center text-surface lg:text-left">
+      <footer className="flex flex-col items-center bg-zinc-50 text-center mt-16 text-surface lg:text-left">
         <div className="container p-6">
           <div className="grid gap-4 items-center lg:grid-cols-2">
             <div className="mb-6 md:mb-0">

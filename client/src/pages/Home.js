@@ -1,13 +1,13 @@
 import React from 'react'
 import Hero from '../components/Hero'
-import JobsList from '../components/JobsListe'
+import Filter from '../components/Filter'
 
 
 const Home = () => {
   return (
     <div>
       <Hero />
-      <JobsList />
+      <Filter />
     </div>
   )
 }
