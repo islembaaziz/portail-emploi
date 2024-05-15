@@ -3,13 +3,15 @@ import axios from 'axios';
 import { API } from '../../../../../constant';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 
-const PopUpProfilUpdate = ({ setPopupOpen }) => {
+
+const PopUpProfilUpdate = ({ setPopupOpen, reloadParentPage}) => {
   const [formData, setFormData] = useState({
     name: '',
     lastName: '',
     email: '',
     adresse: '',
   });
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -62,6 +64,7 @@ const PopUpProfilUpdate = ({ setPopupOpen }) => {
         if (response.data.success) {
           // Handle success, maybe show a success message
           setPopupOpen(false); // Close the popup after successful update
+          reloadParentPage(); // Reload or refresh the parent page
         } else {
           console.error('Error updating user profile:', response.data.message);
         }

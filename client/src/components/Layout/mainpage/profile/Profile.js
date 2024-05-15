@@ -11,6 +11,7 @@ const Profile = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const [popupOpen, setPopupOpen] = useState(false);
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,6 +43,10 @@ const Profile = () => {
     return name.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
   };
 
+  const reloadParentPage = () => {
+    window.location.reload(); // Reloads the current page
+  };
+
   return (
     <div className="bg-white max-w-auto shadow overflow-hidden sm:rounded-lg">
       {user ? (
@@ -58,7 +63,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="flex gap-4 justify-center items-center">
-            {popupOpen && <PopUpProfilUpdate setPopupOpen={setPopupOpen} />}
+            {popupOpen && <PopUpProfilUpdate setPopupOpen={setPopupOpen} reloadParentPage={reloadParentPage} />}
           <button
               className="flex items-center gap-1 text-gray-500 hover:text-gray-900 focus:outline-none"
               onClick={() => setPopupOpen(!popupOpen)}
