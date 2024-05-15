@@ -1,8 +1,8 @@
 import userModel from '../models/userModel.js';
 
 export const updateUserController = async (req, res, next) => {
-  const { name, lastName, email, adresse, role } = req.body;
-  if (!name || !lastName || !email || !adresse || !role) {
+  const { name, lastName, email, adresse } = req.body;
+  if (!name || !lastName || !email || !adresse ) {
     return next('Please Provide All Fields');
   }
   try {
@@ -17,13 +17,12 @@ export const updateUserController = async (req, res, next) => {
     user.lastName = lastName;
     user.email = email;
     user.adresse = adresse;
-    user.role = role;
 
-    await user.save();
-    const token = user.createJWT();
+    await user.save({ validateBeforeSave: false });
+   
     res.status(200).json({
       user,
-      token,
+      success: true,
     });
   } catch (error) {
     console.log(error);
