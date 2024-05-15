@@ -3,43 +3,56 @@ import userModel from '../models/userModel.js';
 export const updateUserController = async (req, res, next) => {
   const { name, lastName, email, adresse, role } = req.body;
   if (!name || !lastName || !email || !adresse || !role) {
-    next('Please Provide All Fields');
+    return next('Please Provide All Fields');
   }
-  const user = await userModel.findOne({ _id: req.user.userId });
-  user.name = name;
-  user.lastName = lastName;
-  user.email = email;
-  user.adresse = adresse;
-  user.role = role;
-
-  await user.save();
-  const token = user.createJWT();
-  res.status(200).json({
-    user,
-    token,
-  });
-};
-
-//get user data
-export const getUserContoller = async (req, res, next) => {
   try {
-    const user = await userModel.findById({ _id: req.body.user.userId });
-    user.password = undefined;
+    const user = await userModel.findById(req.body.user.userId);
     if (!user) {
-      return res.status(200).send({
+      return res.status(404).json({
         message: 'User Not Found',
         success: false,
       });
-    } else {
-      res.status(200).send({
-        success: true,
-        data: user,
-      });
     }
+    user.name = name;
+    user.lastName = lastName;
+    user.email = email;
+    user.adresse = adresse;
+    user.role = role;
+
+    await user.save();
+    const token = user.createJWT();
+    res.status(200).json({
+      user,
+      token,
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).send({
-      message: 'auth error',
+    res.status(500).json({
+      message: 'Internal Server Error',
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+export const getUserContoller = async (req, res, next) => {
+  try {
+    const user = await userModel.findById(req.body.user.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'User Not Found',
+        success: false,
+      });
+    }
+    user.password = undefined;
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Internal Server Error',
       success: false,
       error: error.message,
     });

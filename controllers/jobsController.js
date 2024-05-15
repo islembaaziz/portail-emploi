@@ -20,15 +20,9 @@ export const createJobController = async (req, res, next) => {
 // ======= GET JOBS ===========
 export const getAllJobsController = async (req, res, next) => {
   try {
-    if (!req.body.user || !req.body.user.userId) {
-      throw new Error("User not authenticated");
-    }
-
     const { status, workType, search, sort } = req.query;
 
-    const queryObject = {
-      createdBy: req.body.user.userId,
-    };
+    const queryObject = {};
 
     if (status && status !== "all") {
       queryObject.status = status;
@@ -72,6 +66,7 @@ export const getAllJobsController = async (req, res, next) => {
     next(error);
   }
 };
+
 
 // ======= UPDATE JOBS ===========
 export const updateJobController = async (req, res, next) => {
