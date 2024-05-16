@@ -20,6 +20,11 @@ const Filter = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [sortOption, setSortOption] = useState('latest'); // Default sort option
   const [selectedFilters, setSelectedFilters] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   const handleFilterChange = (filterValue, isChecked) => {
     if (isChecked) {
@@ -30,34 +35,37 @@ const Filter = () => {
       );
     }
   };
+  
+
   useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API}/job/get-job`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            sort: sortOption,
+            workType: selectedFilters.join(','), // Pass selected filters as a comma-separated string
+            search: searchQuery // Add search query parameter
+          },
+        });
+        setJobs(response.data.jobs);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching jobs data:', error);
+        setLoading(false);
+      }
+    };
+
     const delayDebounceFn = setTimeout(() => {
       fetchJobs();
     }, 300); // debounce time in milliseconds
 
     return () => clearTimeout(delayDebounceFn);
-  }, [sortOption, selectedFilters]);
-
-  const fetchJobs = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/job/get-job`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          sort: sortOption,
-          workType: selectedFilters.join(','), // Pass selected filters as a comma-separated string
-        },
-      });
-      setJobs(response.data.jobs);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching jobs data:', error);
-      setLoading(false);
-    }
-  };
+  }, [sortOption, selectedFilters, searchQuery]);
 
   const sortOptions = [
     { name: 'Latest', value: 'latest' },
@@ -148,7 +156,15 @@ const Filter = () => {
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
               Nos offres
             </h1>
-
+            <div className="mt-4 mb-8">
+            <input
+              type="text"
+              placeholder="Rechercher..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="border border-gray-300 rounded-md py-2 px-4 w-full focus:outline-none focus:border-blue-300"
+            />
+          </div>
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
