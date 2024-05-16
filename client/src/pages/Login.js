@@ -47,6 +47,7 @@ const Login = () => {
         localStorage.setItem('token', data.token);
         toast.success('Connecté avec succès ');
         navigate('/');
+        window.location.reload();
       }
     } catch (error) {
       dispatch(hideLoading());

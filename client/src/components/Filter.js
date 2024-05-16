@@ -1,14 +1,13 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import Spinner from './shared/Spinner';
 
 import {
   ChevronDownIcon,
   FunnelIcon,
   MinusIcon,
   PlusIcon,
-  Squares2X2Icon,
-  AcademicCapIcon,
 } from '@heroicons/react/20/solid';
 import Card from './shared/Card';
 import axios from 'axios';
@@ -16,18 +15,28 @@ import { API } from '../constant';
 
 const Filter = () => {
   const [jobs, setJobs] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [sortOption, setSortOption] = useState('latest'); // Default sort option
+  const [selectedFilters, setSelectedFilters] = useState([]);
+
+  const handleFilterChange = (filterValue, isChecked) => {
+    if (isChecked) {
+      setSelectedFilters([...selectedFilters, filterValue]);
+    } else {
+      setSelectedFilters(
+        selectedFilters.filter((filter) => filter !== filterValue)
+      );
+    }
+  };
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       fetchJobs();
     }, 300); // debounce time in milliseconds
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, currentPage]);
+  }, [sortOption, selectedFilters]);
 
   const fetchJobs = async () => {
     try {
@@ -38,13 +47,11 @@ const Filter = () => {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          page: currentPage,
-          search: searchQuery,
+          sort: sortOption,
+          workType: selectedFilters.join(','), // Pass selected filters as a comma-separated string
         },
       });
-      console.log('data', response.data);
       setJobs(response.data.jobs);
-      setTotalPages(response.data.numOfPage);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching jobs data:', error);
@@ -52,62 +59,39 @@ const Filter = () => {
     }
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
   const sortOptions = [
-    { name: 'Latest', href: '#', current: true },
-    { name: 'Oldest', href: '#', current: false },
-    { name: 'a-z', href: '#', current: false },
-    { name: 'z-a', href: '#', current: false },
+    { name: 'Latest', value: 'latest' },
+    { name: 'Oldest', value: 'oldest' },
+    { name: 'A-Z', value: 'a-z' },
+    { name: 'Z-A', value: 'z-a' },
   ];
-  const subCategories = [
-    { name: 'Totes', href: '#' },
-    { name: 'Backpacks', href: '#' },
-    { name: 'Travel Bags', href: '#' },
-    { name: 'Hip Bags', href: '#' },
-    { name: 'Laptop Sleeves', href: '#' },
-  ];
+
   const filters = [
     {
-      id: 'color',
-      name: 'Color',
+      id: 'Categorie',
+      name: 'Categorie',
       options: [
-        { value: 'white', label: 'White', checked: false },
-        { value: 'beige', label: 'Beige', checked: false },
-        { value: 'blue', label: 'Blue', checked: true },
-        { value: 'brown', label: 'Brown', checked: false },
-        { value: 'green', label: 'Green', checked: false },
-        { value: 'purple', label: 'Purple', checked: false },
-      ],
-    },
-    {
-      id: 'category',
-      name: 'Category',
-      options: [
-        { value: 'new-arrivals', label: 'New Arrivals', checked: false },
-        { value: 'sale', label: 'Sale', checked: false },
-        { value: 'travel', label: 'Travel', checked: true },
-        { value: 'organization', label: 'Organization', checked: false },
-        { value: 'accessories', label: 'Accessories', checked: false },
-      ],
-    },
-    {
-      id: 'size',
-      name: 'Size',
-      options: [
-        { value: '2l', label: '2L', checked: false },
-        { value: '6l', label: '6L', checked: false },
-        { value: '12l', label: '12L', checked: false },
-        { value: '18l', label: '18L', checked: false },
-        { value: '20l', label: '20L', checked: false },
-        { value: '40l', label: '40L', checked: true },
+        { name: 'Temps plein', label: 'Temps plein', value: 'temps-plein' },
+        {
+          name: 'Temps partiel',
+          label: 'Temps partiel',
+          value: 'temps-partiel',
+        },
+        {
+          name: 'Emplois saisonniers',
+          label: 'Emplois saisonniers',
+          value: 'emplois-saisonnier',
+        },
+        {
+          name: 'Emplois à distance',
+          label: 'Emplois à distance',
+          value: 'emplois-distance',
+        },
+        { name: 'Stages', label: 'Stages', value: 'stage' },
       ],
     },
   ];
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(' ');
-  }
+
   return (
     <div name="offres" className="bg-white">
       <div>
@@ -153,80 +137,6 @@ const Filter = () => {
                       <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
                   </div>
-
-                  {/* Filters */}
-                  <form className="mt-4 border-t border-gray-200">
-                    <h3 className="sr-only">Categories</h3>
-                    <ul
-                      className="px-2 py-3 font-medium text-gray-900"
-                    >
-                      {subCategories.map((category) => (
-                        <li key={category.name}>
-                          <a href={category.href} className="block px-2 py-3">
-                            {category.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {filters.map((section) => (
-                      <Disclosure
-                        as="div"
-                        key={section.id}
-                        className="border-t border-gray-200 px-4 py-6"
-                      >
-                        {({ open }) => (
-                          <>
-                            <h3 className="-mx-2 -my-3 flow-root">
-                              <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                <span className="font-medium text-gray-900">
-                                  {section.name}
-                                </span>
-                                <span className="ml-6 flex items-center">
-                                  {open ? (
-                                    <MinusIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  ) : (
-                                    <PlusIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
-                                  )}
-                                </span>
-                              </Disclosure.Button>
-                            </h3>
-                            <Disclosure.Panel className="pt-6">
-                              <div className="space-y-6">
-                                {section.options.map((option, optionIdx) => (
-                                  <div
-                                    key={option.value}
-                                    className="flex items-center"
-                                  >
-                                    <input
-                                      id={`filter-mobile-${section.id}-${optionIdx}`}
-                                      name={`${section.id}[]`}
-                                      defaultValue={option.value}
-                                      type="checkbox"
-                                      defaultChecked={option.checked}
-                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                    />
-                                    <label
-                                      htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                      className="ml-3 min-w-0 flex-1 text-gray-500"
-                                    >
-                                      {option.label}
-                                    </label>
-                                  </div>
-                                ))}
-                              </div>
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    ))}
-                  </form>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -250,7 +160,6 @@ const Filter = () => {
                     />
                   </Menu.Button>
                 </div>
-
                 <Transition
                   as={Fragment}
                   enter="transition ease-out duration-100"
@@ -263,20 +172,16 @@ const Filter = () => {
                   <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
                       {sortOptions.map((option) => (
-                        <Menu.Item key={option.name}>
+                        <Menu.Item key={option.value}>
                           {({ active }) => (
-                            <a
-                              href={option.href}
-                              className={classNames(
-                                option.current
-                                  ? 'font-medium text-gray-900'
-                                  : 'text-gray-500',
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm'
-                              )}
+                            <button
+                              onClick={() => setSortOption(option.value)}
+                              className={`${
+                                active ? 'bg-gray-100' : ''
+                              } block px-4 py-2 text-sm text-gray-700`}
                             >
                               {option.name}
-                            </a>
+                            </button>
                           )}
                         </Menu.Item>
                       ))}
@@ -285,7 +190,6 @@ const Filter = () => {
                 </Transition>
               </Menu>
 
-              
               <button
                 type="button"
                 className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
@@ -305,17 +209,6 @@ const Filter = () => {
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
               {/* Filters */}
               <form className="hidden lg:block">
-                <h3 className="sr-only">Categories</h3>
-                <ul
-                  className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
-                >
-                  {subCategories.map((category) => (
-                    <li key={category.name}>
-                      <a href={category.href}>{category.name}</a>
-                    </li>
-                  ))}
-                </ul>
-
                 {filters.map((section) => (
                   <Disclosure
                     as="div"
@@ -356,7 +249,15 @@ const Filter = () => {
                                   name={`${section.id}[]`}
                                   defaultValue={option.value}
                                   type="checkbox"
-                                  defaultChecked={option.checked}
+                                  checked={selectedFilters.includes(
+                                    option.value
+                                  )}
+                                  onChange={(e) =>
+                                    handleFilterChange(
+                                      option.value,
+                                      e.target.checked
+                                    )
+                                  }
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
@@ -376,10 +277,11 @@ const Filter = () => {
               </form>
 
               {/* Product grid */}
+
               <div className="lg:col-span-3">
                 <div className=" mt-16 justify-center">
                   {loading ? (
-                    <p>Loading...</p>
+                    <Spinner />
                   ) : (
                     jobs.map((job) => <Card key={job._id} job={job} />)
                   )}

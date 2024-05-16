@@ -17,6 +17,7 @@ const SideBar = ({ onSidebarItemClick, activeComponent }) => {
     localStorage.clear();
     toast.success('Logout Successfuly');
     navigate('/login');
+    window.location.reload();
   };
   return (
     <aside
