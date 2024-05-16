@@ -21,6 +21,9 @@ const Filter = () => {
   const [sortOption, setSortOption] = useState('latest'); // Default sort option
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [numOfPages, setNumOfPages] = useState(0);
+  const perPage = 5;
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -35,7 +38,6 @@ const Filter = () => {
       );
     }
   };
-  
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -49,10 +51,13 @@ const Filter = () => {
           params: {
             sort: sortOption,
             workType: selectedFilters.join(','), // Pass selected filters as a comma-separated string
-            search: searchQuery // Add search query parameter
+            search: searchQuery, // Add search query parameter
+            page: currentPage,
+            limit: perPage,
           },
         });
         setJobs(response.data.jobs);
+        setNumOfPages(response.data.numOfPage);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching jobs data:', error);
@@ -65,7 +70,11 @@ const Filter = () => {
     }, 300); // debounce time in milliseconds
 
     return () => clearTimeout(delayDebounceFn);
-  }, [sortOption, selectedFilters, searchQuery]);
+  }, [sortOption, selectedFilters, searchQuery, currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const sortOptions = [
     { name: 'Latest', value: 'latest' },
@@ -157,14 +166,14 @@ const Filter = () => {
               Nos offres
             </h1>
             <div className="mt-4 mb-8">
-            <input
-              type="text"
-              placeholder="Rechercher..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="border border-gray-300 rounded-md py-2 px-4 w-full focus:outline-none focus:border-blue-300"
-            />
-          </div>
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="border border-gray-300 rounded-md py-2 px-4 w-full focus:outline-none focus:border-blue-300"
+              />
+            </div>
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
@@ -301,6 +310,19 @@ const Filter = () => {
                   ) : (
                     jobs.map((job) => <Card key={job._id} job={job} />)
                   )}
+                </div>
+                <div className="flex justify-center mt-8">
+                  {[...Array(numOfPages).keys()].map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page + 1)}
+                      className={`mx-1 px-3 py-1 border font-bold rounded-md ${
+                        currentPage === page + 1 ? 'bg-gradient-to-r from-orange-500 via-red-600 to-purple-700 text-white font-bold rounded-md' : ''
+                      }`}
+                    >
+                      {page + 1}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
