@@ -16,6 +16,8 @@ import errorMiddelware from './middelwares/errorMiddelware.js';
 import userRoutes from './routes/userRoutes.js';
 import roleRoutes from './routes/roleRoutes.js';
 import jobsRoutes from './routes/jobsRoute.js';
+import applicationRoutes from './routes/applicationRoutes.js'
+
 
 //Dotenv config
 dotenv.config();
@@ -40,6 +42,8 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/role', roleRoutes);
 app.use('/api/v1/job', jobsRoutes);
+app.use('/api/v1/apply', applicationRoutes )
+
 
 
 //validation middelware
