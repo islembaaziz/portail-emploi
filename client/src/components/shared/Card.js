@@ -90,7 +90,7 @@ const Card = ({ job }) => {
           disabled={hasApplied}
           className={`bg-black text-white w-1/3 font-bold rounded-xl p-2 ${hasApplied ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {hasApplied ? 'Already applied' : 'Apply'}
+          {hasApplied ? 'Déjà appliqué' : 'Postuler'}
         </button>
       </div>
     </div>

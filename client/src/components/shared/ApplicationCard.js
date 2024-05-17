@@ -25,10 +25,16 @@ const ApplicationCard = ({ applications, onDelete }) => {
   return (
     <div
       key={applications._id}
-      className={"relative hover:bg-slate-100 shadow-md rounded-lg p-6 m-4 w-full flex flex-col "}
+      className={
+        'relative hover:bg-slate-100 shadow-md rounded-lg p-6 m-4 w-full flex flex-col '
+      }
     >
       {/* TrashIcon */}
-      <TrashIcon onClick={() => onDelete(applications._id)} className="absolute top-2 right-2 h-6 w-6 text-red-500 cursor-pointer" />
+
+      <TrashIcon
+        onClick={() => onDelete(applications._id)}
+        className="absolute top-2 right-2 h-6 w-6 text-red-500 cursor-pointer"
+      />
 
       <div className="flex items-center mb-2">
         <BuildingLibraryIcon className="h-6 w-6" aria-hidden="true" />
@@ -38,11 +44,15 @@ const ApplicationCard = ({ applications, onDelete }) => {
       </div>
       <div className="flex items-center mb-2">
         <ChevronRightIcon className="h-6 w-6" aria-hidden="true" />
-        <h2 className="text-xl font-semibold ">{applications.jobId.position}</h2>
+        <h2 className="text-xl font-semibold ">
+          {applications.jobId.position}
+        </h2>
       </div>
       <div className="mb-4 text-left">
         <p className="text-gray-700 font-semibold mb-1">Description :</p>
-        <p className="text-gray-700 flex-grow">{applications.jobId.description}</p>
+        <p className="text-gray-700 flex-grow">
+          {applications.jobId.description}
+        </p>
       </div>
       <div className="flex justify-between mb-4">
         <div className="flex justify-between items-center gap-2">
@@ -57,9 +67,11 @@ const ApplicationCard = ({ applications, onDelete }) => {
         </div>
       </div>
       <div className="flex justify-center">
-        <div className={`text-white w-1/3 uppercase font-bold rounded-xl p-2 ${getStatusColor(
-          applications.status
-        )}`}>
+        <div
+          className={`text-white w-1/3 uppercase font-bold rounded-xl p-2 ${getStatusColor(
+            applications.status
+          )}`}
+        >
           {applications.status}
         </div>
       </div>
