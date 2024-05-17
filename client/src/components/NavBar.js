@@ -2,12 +2,6 @@ import React from 'react';
 import logo from '../assets/Portail-emploi.png';
 
 const NavBar = () => {
-  const navLinks = [
-    { href: '/', label: 'Accueil' },
-    { href: 'about', label: 'About' },
-  
-  ];
-
   // Check if user token exists in localStorage
   const token = localStorage.getItem('token');
   const isLoggedIn = token !== null;
@@ -20,15 +14,7 @@ const NavBar = () => {
             <img className="max-w-72" src={logo} alt="TE Logo" loading="lazy" />
           </a>
         </div>
-        <ul className="flex-1 flex gap-12 max-lg:hidden">
-          {navLinks.map((item) => (
-            <li key={item.label}>
-              <a href={item.href} className=" hover:text-orange-600 text-xl">
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        
         <div>
           {isLoggedIn ? (
             <a href="/dashboard">
