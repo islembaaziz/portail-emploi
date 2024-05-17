@@ -40,6 +40,20 @@ const MyJobs = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+  const handleDeleteApplication = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/apply/delete-application/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // Remove the deleted application from the state
+      setApplications(applications.filter(application => application._id !== id));
+    } catch (error) {
+      console.error('Error deleting application:', error);
+    }
+  };
 
   return (
     <div className="container mx-auto mt-8 text-center">
@@ -52,6 +66,7 @@ const MyJobs = () => {
             <ApplicationCardCard
               key={application.id}
               applications={application}
+              onDelete={handleDeleteApplication}
             />
           ))
         )}

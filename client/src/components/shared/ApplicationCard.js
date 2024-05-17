@@ -4,9 +4,10 @@ import {
   DocumentIcon,
   ChevronRightIcon,
   BuildingLibraryIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 
-const ApplicationCard = ({ applications }) => {
+const ApplicationCard = ({ applications, onDelete }) => {
   // Function to determine the background color based on status
   const getStatusColor = (status) => {
     switch (status) {
@@ -24,8 +25,11 @@ const ApplicationCard = ({ applications }) => {
   return (
     <div
       key={applications._id}
-      className={"hover:bg-slate-100 shadow-md rounded-lg p-6 m-4 w-full flex flex-col "}
+      className={"relative hover:bg-slate-100 shadow-md rounded-lg p-6 m-4 w-full flex flex-col "}
     >
+      {/* TrashIcon */}
+      <TrashIcon onClick={() => onDelete(applications._id)} className="absolute top-2 right-2 h-6 w-6 text-red-500 cursor-pointer" />
+
       <div className="flex items-center mb-2">
         <BuildingLibraryIcon className="h-6 w-6" aria-hidden="true" />
         <p className="bg-gradient-to-r from-orange-500 via-red-600 to-purple-700 text-xl text-transparent bg-clip-text font-bold">
@@ -54,8 +58,8 @@ const ApplicationCard = ({ applications }) => {
       </div>
       <div className="flex justify-center">
         <div className={`text-white w-1/3 uppercase font-bold rounded-xl p-2 ${getStatusColor(
-        applications.status
-      )}`}>
+          applications.status
+        )}`}>
           {applications.status}
         </div>
       </div>

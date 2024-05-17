@@ -70,8 +70,26 @@ export const getApplicationStatus = async (req, res, next) => {
   }
 };
 
+// ======= DELETE application ===========
+export const deleteApplication = async (req, res, next) => {
+  try {
+    const {id} = req.params;
+    const application = await applicationModel.findById(id);
+    if(!application){
+      throw new Error(`No application found with ID: ${id}`)
+    }
+    if (req.body.user.userId !== application.createdBy.toString()) {
+      throw new Error("You are not authorized to delete this application");
+    }
+    await application.deleteOne();
+    res.status(200).json({ message: "Success, Application Deleted!" });
+  } catch (error) {
+    next(error);
+  }
+}
 export default {
   createApplication,
   getAllUserApplicationController,
   getApplicationStatus,
+  deleteApplication,
 };
