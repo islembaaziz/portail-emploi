@@ -130,16 +130,9 @@ const PopUpProfilUpdate = ({ setPopupOpen, reloadParentPage}) => {
               <div className='flex justify-around'>
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-orange-500 via-red-600 to-purple-700 text-white  font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="w-full bg-gradient-to-r from-orange-500 via-red-600 to-purple-700 text-white  font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 >
                   Sauvegarder
-                </button>
-                <button
-                  className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                  type="button"
-                  onClick={() => setPopupOpen(false)}
-                >
-                  Fermer
                 </button>
               </div>
             </form>
