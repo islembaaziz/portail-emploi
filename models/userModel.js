@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import JWT from 'jsonwebtoken';
-import Role from './roleModel.js';
+
 
 //schema
 

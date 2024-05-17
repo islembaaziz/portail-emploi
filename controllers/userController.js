@@ -1,5 +1,6 @@
 import userModel from '../models/userModel.js';
 
+
 export const updateUserController = async (req, res, next) => {
   const { name, lastName, email, adresse } = req.body;
   if (!name || !lastName || !email || !adresse ) {

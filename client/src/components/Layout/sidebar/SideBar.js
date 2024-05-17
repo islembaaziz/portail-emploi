@@ -2,11 +2,11 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import {
-  UserOutlined,
-  LogoutOutlined,
-  ClusterOutlined,
-  CheckOutlined,
-} from '@ant-design/icons';
+  UserCircleIcon,
+  CheckCircleIcon,
+  ArrowRightStartOnRectangleIcon,
+  ChartPieIcon,
+} from '@heroicons/react/24/outline';
 
 const SideBar = ({ onSidebarItemClick, activeComponent }) => {
   const handleItemClick = (componentName) => {
@@ -27,7 +27,7 @@ const SideBar = ({ onSidebarItemClick, activeComponent }) => {
     >
       <div className=" px-3 py-4 overflow-y-auto bg-gray-50">
         <div className="flex items-center p-2 mb-4 bg-gray-200 text-teal-600 text-xl rounded-lg">
-          <ClusterOutlined />
+          <ChartPieIcon className="h-5 w-5" />
           <span className="ms-3 font-semibold">Dashboard</span>
         </div>
         <ul className="space-y-2  font-medium">
@@ -38,7 +38,7 @@ const SideBar = ({ onSidebarItemClick, activeComponent }) => {
               }`}
               onClick={() => handleItemClick('Profile')}
             >
-              <UserOutlined />
+              <UserCircleIcon className="h-5 w-5" />
               <span className="flex ms-3 whitespace-nowrap">Profile</span>
             </button>
           </li>
@@ -49,7 +49,7 @@ const SideBar = ({ onSidebarItemClick, activeComponent }) => {
               }`}
               onClick={() => handleItemClick('MyJobs')}
             >
-              <CheckOutlined />
+              <CheckCircleIcon className="h-5 w-5" />
               <span className="flex ms-3 whitespace-nowrap">
                 Mes candidatures
               </span>
@@ -62,7 +62,7 @@ const SideBar = ({ onSidebarItemClick, activeComponent }) => {
                 activeComponent === 'Logout' ? 'bg-blue-200' : ''
               }`}
             >
-              <LogoutOutlined />
+              <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
               <span className="flex ms-3 whitespace-nowrap">
                 Se déconnecter
               </span>
