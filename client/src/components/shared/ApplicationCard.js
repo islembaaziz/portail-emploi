@@ -26,7 +26,7 @@ const ApplicationCard = ({ applications, onDelete }) => {
     <div
       key={applications._id}
       className={
-        'relative hover:bg-slate-100 shadow-md rounded-lg p-6 m-4 w-full flex flex-col '
+        'relative bg-zinc-100 hover:bg-slate-100 shadow-md rounded-lg p-6 m-4 w-full flex flex-col '
       }
     >
       {/* TrashIcon */}
