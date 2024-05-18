@@ -2,6 +2,7 @@ import express from 'express';
 import {
   registerController,
   loginController,
+  adminLoginController,
 } from '../controllers/authController.js';
 import userAuth from '../middelwares/authMiddelware.js';
 import rateLimit from 'express-rate-limit';
@@ -24,4 +25,7 @@ router.post('/register', userAuth, limiter, registerController);
 // Login route || POST
 router.post('/login', limiter, loginController);
 
+//Admin Login route || POST
+
+router.post('/admin-login', limiter, adminLoginController);
 export default router;

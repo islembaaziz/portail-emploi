@@ -78,3 +78,39 @@ export const loginController = async (req, res, next) => {
     token,
   });
 };
+
+
+export const adminLoginController = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Validation
+  if (!email || !password) {
+    return next('Please provide all fields');
+  }
+
+  // Find user by email
+  const user = await userModel.findOne({ email }).select("+password");
+  if (!user) {
+    return next('Invalid username or password');
+  }
+
+  // Check role
+  if (user.role !== 'Admin' && user.role !== 'HR') {
+    return res.status(403).json({ message: 'Unauthorized' });
+  }
+
+  // Compare password
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    return next('Invalid username or password');
+  }
+
+  user.password = undefined;
+  const token = user.createJWT();
+  res.status(200).json({
+    success: true,
+    message: 'Admin login successfully',
+    user,
+    token,
+  });
+};
