@@ -1,13 +1,14 @@
-import jobsModel from "../models/jobsModel.js";
-import mongoose from "mongoose";
-import moment from "moment";
+import jobsModel from '../models/jobsModel.js';
+import Application from '../models/applicationModel.js';
+import mongoose from 'mongoose';
+import moment from 'moment';
 
 // ====== CREATE JOB ======
 export const createJobController = async (req, res, next) => {
   try {
     const { company, position } = req.body;
     if (!company || !position) {
-      throw new Error("Please provide all fields");
+      throw new Error('Please provide all fields');
     }
     req.body.createdBy = req.body.user.userId;
     const job = await jobsModel.create(req.body);
@@ -24,26 +25,26 @@ export const getAllJobsController = async (req, res, next) => {
 
     const queryObject = {};
 
-    if (status && status !== "all") {
+    if (status && status !== 'all') {
       queryObject.status = status;
     }
-    if (workType && workType !== "all") {
+    if (workType && workType !== 'all') {
       queryObject.workType = workType;
     }
     if (search) {
-      queryObject.position = { $regex: search, $options: "i" };
+      queryObject.position = { $regex: search, $options: 'i' };
     }
 
     let queryResult = jobsModel.find(queryObject);
 
-    if (sort === "latest") {
-      queryResult = queryResult.sort("-createdAt");
-    } else if (sort === "oldest") {
-      queryResult = queryResult.sort("createdAt");
-    } else if (sort === "a-z") {
-      queryResult = queryResult.sort("position");
-    } else if (sort === "z-a") {
-      queryResult = queryResult.sort("-position");
+    if (sort === 'latest') {
+      queryResult = queryResult.sort('-createdAt');
+    } else if (sort === 'oldest') {
+      queryResult = queryResult.sort('createdAt');
+    } else if (sort === 'a-z') {
+      queryResult = queryResult.sort('position');
+    } else if (sort === 'z-a') {
+      queryResult = queryResult.sort('-position');
     }
 
     const page = Number(req.query.page) || 1;
@@ -67,7 +68,6 @@ export const getAllJobsController = async (req, res, next) => {
   }
 };
 
-
 // ======= UPDATE JOBS ===========
 export const updateJobController = async (req, res, next) => {
   try {
@@ -75,7 +75,7 @@ export const updateJobController = async (req, res, next) => {
     const { company, position } = req.body;
 
     if (!company || !position) {
-      throw new Error("Please provide all fields");
+      throw new Error('Please provide all fields');
     }
 
     const job = await jobsModel.findById(id);
@@ -85,7 +85,7 @@ export const updateJobController = async (req, res, next) => {
     }
 
     if (req.body.user.userId !== job.createdBy.toString()) {
-      throw new Error("You are not authorized to update this job");
+      throw new Error('You are not authorized to update this job');
     }
 
     const updatedJob = await jobsModel.findByIdAndUpdate(id, req.body, {
@@ -100,23 +100,34 @@ export const updateJobController = async (req, res, next) => {
 };
 
 // ======= DELETE JOBS ===========
+
 export const deleteJobController = async (req, res, next) => {
   try {
     const { id } = req.params;
-
     const job = await jobsModel.findById(id);
 
     if (!job) {
-      throw new Error(`No job found with ID: ${id}`);
+      return res.status(404).json({ error: `No job found with ID: ${id}` });
     }
 
-    if (req.body.user.userId !== job.createdBy.toString()) {
-      throw new Error("You are not authorized to delete this job");
+    const { userId, role } = req.body.user;
+
+    if (
+      req.body.user.role !== 'Admin' &&
+      req.body.user.role !== 'HR' &&
+      userId !== job.createdBy.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ error: 'You are not authorized to delete this job' });
     }
 
+    // Delete the job
     await job.deleteOne();
-    
-    res.status(200).json({ message: "Success, Job Deleted!" });
+
+    // Delete associated applications
+    await Application.deleteMany({ jobId: id });
+    res.status(200).json({ message: 'Success, Job and associated applications deleted!' });
   } catch (error) {
     next(error);
   }
@@ -126,7 +137,7 @@ export const deleteJobController = async (req, res, next) => {
 export const jobStatsController = async (req, res, next) => {
   try {
     if (!req.body.user || !req.body.user.userId) {
-      throw new Error("User not authenticated");
+      throw new Error('User not authenticated');
     }
 
     const stats = await jobsModel.aggregate([
@@ -137,7 +148,7 @@ export const jobStatsController = async (req, res, next) => {
       },
       {
         $group: {
-          _id: "$status",
+          _id: '$status',
           count: { $sum: 1 },
         },
       },
@@ -150,11 +161,11 @@ export const jobStatsController = async (req, res, next) => {
     };
 
     stats.forEach((stat) => {
-      if (stat._id === "pending") {
+      if (stat._id === 'pending') {
         defaultStats.pending = stat.count;
-      } else if (stat._id === "reject") {
+      } else if (stat._id === 'reject') {
         defaultStats.reject = stat.count;
-      } else if (stat._id === "interview") {
+      } else if (stat._id === 'interview') {
         defaultStats.interview = stat.count;
       }
     });
@@ -168,8 +179,8 @@ export const jobStatsController = async (req, res, next) => {
       {
         $group: {
           _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
           },
           count: {
             $sum: 1,
@@ -178,19 +189,27 @@ export const jobStatsController = async (req, res, next) => {
       },
     ]);
 
-    monthlyApplication = monthlyApplication.map((item) => {
-      const {
-        _id: { year, month },
-        count,
-      } = item;
-      const date = moment()
-        .month(month - 1)
-        .year(year)
-        .format("MMM Y");
-      return { date, count };
-    }).reverse();
+    monthlyApplication = monthlyApplication
+      .map((item) => {
+        const {
+          _id: { year, month },
+          count,
+        } = item;
+        const date = moment()
+          .month(month - 1)
+          .year(year)
+          .format('MMM Y');
+        return { date, count };
+      })
+      .reverse();
 
-    res.status(200).json({ totalJobsStatus: stats.length, defaultStats, monthlyApplication });
+    res
+      .status(200)
+      .json({
+        totalJobsStatus: stats.length,
+        defaultStats,
+        monthlyApplication,
+      });
   } catch (error) {
     next(error);
   }
