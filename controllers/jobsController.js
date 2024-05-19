@@ -84,8 +84,14 @@ export const updateJobController = async (req, res, next) => {
       throw new Error(`No job found with ID: ${id}`);
     }
 
-    if (req.body.user.userId !== job.createdBy.toString()) {
-      throw new Error('You are not authorized to update this job');
+    if (
+      req.body.user.role !== 'Admin' &&
+      req.body.user.role !== 'HR' &&
+      userId !== job.createdBy.toString()
+    ) {
+      return res
+      .status(403)
+      .json({ error: 'You are not authorized to delete this job' });
     }
 
     const updatedJob = await jobsModel.findByIdAndUpdate(id, req.body, {
@@ -127,7 +133,9 @@ export const deleteJobController = async (req, res, next) => {
 
     // Delete associated applications
     await Application.deleteMany({ jobId: id });
-    res.status(200).json({ message: 'Success, Job and associated applications deleted!' });
+    res
+      .status(200)
+      .json({ message: 'Success, Job and associated applications deleted!' });
   } catch (error) {
     next(error);
   }
@@ -203,13 +211,11 @@ export const jobStatsController = async (req, res, next) => {
       })
       .reverse();
 
-    res
-      .status(200)
-      .json({
-        totalJobsStatus: stats.length,
-        defaultStats,
-        monthlyApplication,
-      });
+    res.status(200).json({
+      totalJobsStatus: stats.length,
+      defaultStats,
+      monthlyApplication,
+    });
   } catch (error) {
     next(error);
   }
