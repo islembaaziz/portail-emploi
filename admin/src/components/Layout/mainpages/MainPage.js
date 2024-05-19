@@ -11,7 +11,7 @@ const MainPage = ({ activeComponent }) => {
       {activeComponent === 'Utilisateurs' && <Users />}
       {activeComponent === 'Offres' && <Jobs />}
       {activeComponent === 'Roles' && <Roles />}
-      {activeComponent === 'Candidatures' && <Applications />}
+      {activeComponent === 'Applications' && <Applications />}
     </div>
   </div>
   )

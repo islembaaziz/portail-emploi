@@ -71,9 +71,9 @@ const Sidebar = ({ onSidebarItemClick, activeComponent }) => {
           <li>
             <button
               className={`flex items-center w-full p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
-                activeComponent === 'Candidatures' ? 'bg-blue-200' : ''
+                activeComponent === 'Applications' ? 'bg-blue-200' : ''
               }`}
-              onClick={() => handleItemClick('Candidatures')}
+              onClick={() => handleItemClick('Applications')}
             >
               <ClipboardDocumentListIcon className="h-5 w-5" />
               <span className="flex ms-3 whitespace-nowrap">Candidatures</span>
