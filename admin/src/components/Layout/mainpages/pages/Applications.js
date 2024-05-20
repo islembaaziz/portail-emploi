@@ -68,6 +68,7 @@ const Applications = () => {
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
+  console.log(applications)
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
@@ -96,7 +97,7 @@ const Applications = () => {
   const handleSubmit = async (values) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(
+      await axios.patch(
         `${API}/apply/update-application/${currentApplication._id}`,
         values,
         {
@@ -126,27 +127,17 @@ const Applications = () => {
             <FormComponent
               title="Mettre à jour cette offre"
               fields={[
-                { name: 'company', label: 'Entreprise', type: 'text' },
-                { name: 'position', label: 'Position', type: 'text' },
                 {
-                  name: 'workLocation',
-                  label: 'Lieu de travail',
-                  type: 'text',
-                },
-                {
-                  name: 'workType',
-                  label: 'Type de travail',
+                  name: 'status',
+                  label: 'statut du candidature',
                   type: 'select',
                   enum: [
-                    'temps-plein',
-                    'temps-partiel',
-                    'stage',
-                    'contract', // corrected spelling
-                    'emplois-distance',
-                    'emplois-saisonnier',
+                    'en attente',
+                    'rejeter',
+                    'entretien',
                   ],
                 },
-                { name: 'description', label: 'Description', type: 'text' },
+              
               ]}
               initialValues={currentApplication}
               onSubmit={handleSubmit}
@@ -163,6 +154,9 @@ const Applications = () => {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   ENTREPRISE
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  POSTE
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Utilisateur
@@ -183,6 +177,9 @@ const Applications = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {application.jobId.company}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {application.jobId.position}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {application.createdBy.name}{' '}
@@ -217,6 +214,9 @@ const Applications = () => {
             >
               Previous
             </button>
+            <span>
+              Page {currentPage}/{totalPages}
+            </span>
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((prev) => prev + 1)}

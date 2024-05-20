@@ -16,7 +16,7 @@ const MyJobs = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${API}/apply/get-application`, {
+        const response = await axios.get(`${API}/apply/get-user-application`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

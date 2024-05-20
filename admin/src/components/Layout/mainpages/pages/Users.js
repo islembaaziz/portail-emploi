@@ -199,10 +199,13 @@ const Users = () => {
                   #
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
+                  Nom
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Email
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Role
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -221,6 +224,9 @@ const Users = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {user.role}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-center space-x-4">
                       <button
@@ -259,7 +265,7 @@ const Users = () => {
               Previous
             </button>
             <span>
-              Page {currentPage} of {totalPages}
+              Page {currentPage}/{totalPages}
             </span>
             <button
               onClick={() =>

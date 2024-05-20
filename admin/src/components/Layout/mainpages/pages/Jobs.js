@@ -210,6 +210,9 @@ const Jobs = () => {
             >
               Previous
             </button>
+            <span>
+              Page {currentPage}/{totalPages}
+            </span>
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((prev) => prev + 1)}
