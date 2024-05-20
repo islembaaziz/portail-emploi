@@ -38,12 +38,12 @@ const Sidebar = ({ onSidebarItemClick, activeComponent }) => {
           <li>
             <button
               className={`flex items-center p-2 w-full text-gray-900 rounded-lg hover:bg-gray-100 group ${
-                activeComponent === 'Utilisateurs' ? 'bg-blue-200' : ''
+                activeComponent === 'Users' ? 'bg-blue-200' : ''
               }`}
-              onClick={() => handleItemClick('Utilisateurs')}
+              onClick={() => handleItemClick('Users')}
             >
               <UserCircleIcon className="h-5 w-5" />
-              <span className="flex ms-3 whitespace-nowrap">Users</span>
+              <span className="flex ms-3 whitespace-nowrap">Utilisateurs</span>
             </button>
           </li>
           <li>
@@ -51,21 +51,10 @@ const Sidebar = ({ onSidebarItemClick, activeComponent }) => {
               className={`flex items-center w-full p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
                 activeComponent === 'Jobs' ? 'bg-blue-200' : ''
               }`}
-              onClick={() => handleItemClick('Offres')}
+              onClick={() => handleItemClick('Jobs')}
             >
               <BriefcaseIcon className="h-5 w-5" />
-              <span className="flex ms-3 whitespace-nowrap">Jobs</span>
-            </button>
-          </li>
-          <li>
-            <button
-              className={`flex items-center w-full p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
-                activeComponent === 'Roles' ? 'bg-blue-200' : ''
-              }`}
-              onClick={() => handleItemClick('Roles')}
-            >
-              <ShieldCheckIcon className="h-5 w-5" />
-              <span className="flex ms-3 whitespace-nowrap">Roles</span>
+              <span className="flex ms-3 whitespace-nowrap">Offres d'emploi</span>
             </button>
           </li>
           <li>
@@ -77,6 +66,17 @@ const Sidebar = ({ onSidebarItemClick, activeComponent }) => {
             >
               <ClipboardDocumentListIcon className="h-5 w-5" />
               <span className="flex ms-3 whitespace-nowrap">Candidatures</span>
+            </button>
+          </li>
+          <li>
+            <button
+              className={`flex items-center w-full p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
+                activeComponent === 'Roles' ? 'bg-blue-200' : ''
+              }`}
+              onClick={() => handleItemClick('Roles')}
+            >
+              <ShieldCheckIcon className="h-5 w-5" />
+              <span className="flex ms-3 whitespace-nowrap">Roles</span>
             </button>
           </li>
           <li>

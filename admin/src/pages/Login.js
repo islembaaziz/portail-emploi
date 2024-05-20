@@ -43,7 +43,6 @@ const Login = () => {
       });
       if (data.success) {
         dispatch(hideLoading());
-        console.log(data.token);
         localStorage.setItem('token', data.token);
         toast.success('Connecté avec succès ');
         navigate('/dashboard');

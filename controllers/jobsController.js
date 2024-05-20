@@ -91,7 +91,7 @@ export const updateJobController = async (req, res, next) => {
     ) {
       return res
       .status(403)
-      .json({ error: 'You are not authorized to delete this job' });
+      .json({ error: 'You are not authorized to update this job' });
     }
 
     const updatedJob = await jobsModel.findByIdAndUpdate(id, req.body, {

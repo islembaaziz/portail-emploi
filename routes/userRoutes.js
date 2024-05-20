@@ -1,6 +1,12 @@
-import express from "express";
-import { updateUserController, getUserContoller } from "../controllers/userController.js";
-import userAuth from "../middelwares/authMiddelware.js";
+import express from 'express';
+import {
+  updateUserController,
+  getUserContoller,
+  getAllUsers,
+  deleteUserController,
+  updateUserId,
+} from '../controllers/userController.js';
+import userAuth from '../middelwares/authMiddelware.js';
 
 //router object
 const router = express.Router();
@@ -10,6 +16,14 @@ const router = express.Router();
 router.post('/getUser', userAuth, getUserContoller);
 
 // UPDATE USER || PUT
-router.put("/update-user", userAuth, updateUserController);
+router.put('/update-user', userAuth, updateUserController);
 
+// GET ALL USERS || GET
+router.get('/get-users', userAuth, getAllUsers);
+
+//DELET USER || DELETE
+router.delete('/delete-user/:id',userAuth, deleteUserController)
+
+//update user using id
+router.patch("/updateUser/:id", userAuth, updateUserId)
 export default router;

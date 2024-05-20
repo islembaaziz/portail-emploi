@@ -8,8 +8,8 @@ const MainPage = ({ activeComponent }) => {
   return (
     <div className="p-4 sm:ml-64">
     <div className="p-4 border-2 h-auto border-gray-300 border-dashed rounded-lg">
-      {activeComponent === 'Utilisateurs' && <Users />}
-      {activeComponent === 'Offres' && <Jobs />}
+      {activeComponent === 'Users' && <Users />}
+      {activeComponent === 'Jobs' && <Jobs />}
       {activeComponent === 'Roles' && <Roles />}
       {activeComponent === 'Applications' && <Applications />}
     </div>

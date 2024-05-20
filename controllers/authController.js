@@ -2,10 +2,6 @@ import userModel from '../models/userModel.js';
 
 export const registerController = async (req, res, next) => {
   const { name, lastName, email, password, adresse, role } = req.body;
-   // Check if the user is an admin
-   if (role !== 'Admin') {
-    return res.status(403).json({ message: 'Unauthorized' });
-  }
 
   if (!name) {
     next('name is required');

@@ -68,7 +68,6 @@ const Applications = () => {
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
-
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
@@ -97,11 +96,15 @@ const Applications = () => {
   const handleSubmit = async (values) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`${API}/apply/update-application/${currentApplication._id}`, values, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.put(
+        `${API}/apply/update-application/${currentApplication._id}`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       toast.success('Application updated successfully');
       fetchApplications();
       setIsFormOpen(false);
@@ -121,7 +124,7 @@ const Applications = () => {
           </div>
           {isFormOpen && (
             <FormComponent
-              title='Mettre à jour cette offre'
+              title="Mettre à jour cette offre"
               fields={[
                 { name: 'company', label: 'Entreprise', type: 'text' },
                 { name: 'position', label: 'Position', type: 'text' },
@@ -148,7 +151,7 @@ const Applications = () => {
               initialValues={currentApplication}
               onSubmit={handleSubmit}
               onClose={handleCloseForm}
-              submitButtonLabel='Mettre à jour cette offre'
+              submitButtonLabel="Mettre à jour cette offre"
             />
           )}
 
