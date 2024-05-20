@@ -11,3 +11,12 @@ export const createRoleController = async (req, res, next) => {
   res.status(201).json({ role });
 };
 
+// ====== GET ALL ROLES ======
+export const getAllRoles = async (req, res, next) => {
+  try {
+    const roles = await roleModel.find();
+    res.status(200).json({ roles });
+  } catch (error) {
+    next(error);
+  }
+};
