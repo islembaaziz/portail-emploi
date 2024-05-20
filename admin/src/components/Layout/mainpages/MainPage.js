@@ -13,6 +13,7 @@ const MainPage = ({ activeComponent }) => {
       {activeComponent === 'Roles' && <Roles />}
       {activeComponent === 'Applications' && <Applications />}
     </div>
+   
   </div>
   )
 }
