@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUser } from '../../../../redux/features/auth/authSlice'; // Update the path to your authSlice
+import { setUser } from '../../../../redux/features/auth/authSlice';
 import axios from 'axios';
 import { API } from '../../../../constant';
+import { APII } from '../../../../constant';
 import PopUpProfilUpdate from './popupprofileupdate/PopUpProfilUpdate';
+
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const [popupOpen, setPopupOpen] = useState(false);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -102,9 +105,7 @@ const Profile = () => {
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">
-                Email address
-              </dt>
+              <dt className="text-sm font-medium text-gray-500">Email address</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {user.email}
               </dd>
@@ -116,11 +117,11 @@ const Profile = () => {
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">About</dt>
+              <dt className="text-sm font-medium text-gray-500">CV</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                To get social media testimonials like these, keep your customers
-                engaged with your social media accounts by posting regularly
-                yourself
+                {user.cv && (
+                  <a className='text-blue-600 underline' href={`${APII}/uploads/${user.cv}`} target="_blank" rel="noopener noreferrer"> Consulter CV</a>
+                )}
               </dd>
             </div>
           </dl>

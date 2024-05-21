@@ -3,6 +3,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import 'express-async-errors';
 //security packages
 import helmet from 'helmet';
@@ -33,6 +35,14 @@ app.use(mongoSanitize());
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
+// Get the directory name in ES module scope
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+//static folder 
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //routes
 app.use('/api/v1/test', testRoutes);

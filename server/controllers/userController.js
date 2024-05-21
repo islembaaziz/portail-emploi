@@ -1,29 +1,45 @@
 import userModel from '../models/userModel.js';
 import Application from '../models/applicationModel.js';
+import upload from '../middelwares/uploadMiddleware.js';
 
 export const updateUserController = async (req, res, next) => {
-  const { name, lastName, email, adresse } = req.body;
-  if (!name || !lastName || !email || !adresse) {
-    return next('Please Provide All Fields');
-  }
   try {
-    const user = await userModel.findById(req.body.user.userId);
+    const { userId } = req.params;
+    const { name, lastName, email, adresse } = req.body;
+
+    // Check if the required fields are present in the request body
+    if (!name || !lastName || !email || !adresse) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required',
+      });
+    }
+
+    const updateData = { name, lastName, email, adresse };
+
+    // Check if a new CV file is uploaded
+    if (req.file) {
+      updateData.cv = req.file.filename;
+    }
+
+    // Update the user information
+    const user = await userModel.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
     if (!user) {
       return res.status(404).json({
         message: 'User Not Found',
         success: false,
       });
     }
-    user.name = name;
-    user.lastName = lastName;
-    user.email = email;
-    user.adresse = adresse;
-
-    await user.save({ validateBeforeSave: false });
 
     res.status(200).json({
-      user,
       success: true,
+      message: 'User updated successfully',
+      data: user,
     });
   } catch (error) {
     console.log(error);
@@ -35,9 +51,11 @@ export const updateUserController = async (req, res, next) => {
   }
 };
 
+
 export const getUserContoller = async (req, res, next) => {
   try {
-    const user = await userModel.findById(req.body.user.userId);
+    const userId = req.body.user.userId;
+    const user = await userModel.findById(userId);
     if (!user) {
       return res.status(404).json({
         message: 'User Not Found',
@@ -47,7 +65,14 @@ export const getUserContoller = async (req, res, next) => {
     user.password = undefined;
     res.status(200).json({
       success: true,
-      data: user,
+      data: {
+        userId: user._id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        adresse: user.adresse,
+        cv: user.cv,
+      },
     });
   } catch (error) {
     console.log(error);

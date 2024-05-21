@@ -7,6 +7,7 @@ import {
   updateUserId,
 } from '../../server/controllers/userController.js';
 import userAuth from '../../server/middelwares/authMiddelware.js';
+import upload from '../../server/middelwares/uploadMiddleware.js';
 
 
 //router object
@@ -17,7 +18,7 @@ const router = express.Router();
 router.post('/getUser', userAuth, getUserContoller);
 
 // UPDATE USER || PUT
-router.put('/update-user', userAuth, updateUserController);
+router.put('/update-user/:userId', userAuth, upload.single('cv'), updateUserController);
 
 // GET ALL USERS || GET
 router.get('/get-users', userAuth, getAllUsers);

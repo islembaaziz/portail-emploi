@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import Spinner from '../../../../components/shared/Spinner';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import FormComponent from '../../../shared/FormComponent';
+import ProfilePopUp from './ProfilePopUp';
 
 const Applications = () => {
   const [applications, setApplications] = useState([]);
@@ -37,8 +38,11 @@ const Applications = () => {
       email: '',
       adresse: '',
       role: '',
+      cv: '', // CV file
+      originalCV: '' // To keep the original CV value
     },
   });
+  const [selectedUser, setSelectedUser] = useState(null);
   const applicationsPerPage = 10;
 
   const dispatch = useDispatch();
@@ -68,7 +72,7 @@ const Applications = () => {
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
-  console.log(applications)
+
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
@@ -114,6 +118,14 @@ const Applications = () => {
     }
   };
 
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+  };
+
+  const handleClosePopup = () => {
+    setSelectedUser(null);
+  };
+
   return (
     <>
       {loading ? (
@@ -131,13 +143,8 @@ const Applications = () => {
                   name: 'status',
                   label: 'statut du candidature',
                   type: 'select',
-                  enum: [
-                    'en attente',
-                    'rejeter',
-                    'entretien',
-                  ],
+                  enum: ['en attente', 'rejeter', 'entretien'],
                 },
-              
               ]}
               initialValues={currentApplication}
               onSubmit={handleSubmit}
@@ -181,7 +188,11 @@ const Applications = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {application.jobId.position}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td
+                    className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 underline
+                     cursor-pointer hover:bg-blue-50 hover:text-blue-800 transition duration-200"
+                    onClick={() => handleUserClick(application.createdBy)}
+                  >
                     {application.createdBy.name}{' '}
                     {application.createdBy.lastName}
                   </td>
@@ -226,6 +237,9 @@ const Applications = () => {
             </button>
           </div>
         </div>
+      )}
+      {selectedUser && (
+        <ProfilePopUp user={selectedUser} onClose={handleClosePopup} />
       )}
     </>
   );
