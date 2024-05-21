@@ -110,7 +110,7 @@ export const deleteApplication = async (req, res, next) => {
     }
     if (
       req.body.user.role !== 'Admin' &&
-      req.body.user.role !== 'HR' &&
+      req.body.user.role !== 'RH' &&
       userId !== application.createdBy.toString()
     ) {
       return res
@@ -131,7 +131,7 @@ export const updateApplicationController = async (req, res, next) => {
     const { user } = req.body;
 
     // Check if the user is authorized to update the application
-    if (req.body.user.role !== 'Admin' && req.body.user.role !== 'HR') {
+    if (req.body.user.role !== 'Admin' && req.body.user.role !== 'RH') {
       return res
         .status(403)
         .json({ error: 'You are not authorized to update this application' });

@@ -208,7 +208,7 @@ const Jobs = () => {
               onClick={() => setCurrentPage((prev) => prev - 1)}
               className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md disabled:opacity-50"
             >
-              Previous
+              Précédent
             </button>
             <span>
               Page {currentPage}/{totalPages}
@@ -218,7 +218,7 @@ const Jobs = () => {
               onClick={() => setCurrentPage((prev) => prev + 1)}
               className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md disabled:opacity-50"
             >
-              Next
+              Suivante
             </button>
           </div>
         </div>

@@ -3,7 +3,7 @@ import Sidebar from './sidebar/Sidebar';
 import MainPage from './mainpages/MainPage';
 
 const Layout = () => {
-  const [activeComponent, setActiveComponent] = useState('Utilisateurs');
+  const [activeComponent, setActiveComponent] = useState('Users');
   const handleSidebarItemClick = (componentName) => {
     setActiveComponent(componentName);
   };

@@ -86,7 +86,7 @@ export const updateJobController = async (req, res, next) => {
 
     if (
       req.body.user.role !== 'Admin' &&
-      req.body.user.role !== 'HR' &&
+      req.body.user.role !== 'RH' &&
       userId !== job.createdBy.toString()
     ) {
       return res
@@ -120,7 +120,7 @@ export const deleteJobController = async (req, res, next) => {
 
     if (
       req.body.user.role !== 'Admin' &&
-      req.body.user.role !== 'HR' &&
+      req.body.user.role !== 'RH' &&
       userId !== job.createdBy.toString()
     ) {
       return res

@@ -178,7 +178,7 @@ const Users = () => {
                   name: 'role',
                   label: 'Role',
                   type: 'select',
-                  enum: ['Admin', 'HR', 'User'],
+                  enum: ['Admin', 'RH', 'User'],
                 },
               ].filter(Boolean)} // Remove null fields
               initialValues={currentUser}
@@ -262,7 +262,7 @@ const Users = () => {
               disabled={currentPage === 1}
               className="px-4 py-2 bg-gray-300 rounded-md"
             >
-              Previous
+              Précédent
             </button>
             <span>
               Page {currentPage}/{totalPages}
@@ -274,7 +274,7 @@ const Users = () => {
               disabled={currentPage === totalPages}
               className="px-4 py-2 bg-gray-300 rounded-md"
             >
-              Next
+              Suivante
             </button>
           </div>
         </div>

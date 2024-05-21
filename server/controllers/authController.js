@@ -92,7 +92,7 @@ export const adminLoginController = async (req, res, next) => {
   }
 
   // Check role
-  if (user.role !== 'Admin' && user.role !== 'HR') {
+  if (user.role !== 'Admin' && user.role !== 'RH') {
     return res.status(403).json({ message: 'Unauthorized' });
   }
 
