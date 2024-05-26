@@ -6,12 +6,14 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Dashboard from './pages/Dashboard';
+import Register from './pages/Register';
 //components import
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 //public and private route import
 import PrivateRoute from './components/routes/PrivateRoute';
 import PublicRoute from './components/routes/PublicRoute';
+
 
 function App() {
   return (
@@ -37,6 +39,14 @@ function App() {
                 element={
                   <PublicRoute>
                     <Login />
+                  </PublicRoute>
+                }
+              />
+               <Route
+                path="/register"
+                element={
+                  <PublicRoute>
+                    <Register />
                   </PublicRoute>
                 }
               />

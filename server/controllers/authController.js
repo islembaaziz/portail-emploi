@@ -4,52 +4,57 @@ import userModel from '../models/userModel.js';
 export const registerController = async (req, res, next) => {
   const { name, lastName, email, password, adresse, role } = req.body;
 
-  if (!name) {
-    next('name is required');
-  }
-  if (!lastName) {
-    next('last name is required');
-  }
-  if (!email) {
-    next(' email is required');
-  }
-  if (!password) {
-    next('password is required and greater than 6 charachter');
-  }
-  if (!adresse) {
-    next('adresse is required');
-  }
-  if (!role) {
-    next('role is required');
-  }
-  const existingUser = await userModel.findOne({ email });
-  if (existingUser) {
-    next(' Email Already Used Please Login');
-  }
-  const user = await userModel.create({
-    name,
-    lastName,
-    email,
-    password,
-    adresse,
-    role,
-  });
-  //token
-  const token = user.createJWT();
-  res.status(201).send({
-    success: true,
-    message: 'User Created Successfully',
-    user: {
-      name: user.name,
-      lastName: user.lastName,
-      email: user.email,
-      adresse: user.adresse,
-      role: user.role,
-    },
-    token,
-  });
-};
+  try {
+    if (!name) {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+    if (!lastName) {
+      return res.status(400).json({ error: 'Last name is required' });
+    }
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+    if (!password || password.length < 6) {
+      return res.status(400).json({ error: 'Password is required and should be at least 6 characters long' });
+    }
+    if (!adresse) {
+      return res.status(400).json({ error: 'Address is required' });
+    }
+    if (!role) {
+      return res.status(400).json({ error: 'Role is required' });
+    }
 
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already used, please login' });
+    }
+
+    const user = await userModel.create({
+      name,
+      lastName,
+      email,
+      password,
+      adresse,
+      role,
+    });
+
+    const token = user.createJWT();
+    res.status(201).send({
+      success: true,
+      message: 'User created successfully',
+      user: {
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        adresse: user.adresse,
+        role: user.role,
+      },
+      token,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const loginController = async (req, res, next) => {
   const { email, password } = req.body;
   //Validation

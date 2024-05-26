@@ -4,7 +4,6 @@ import {
   loginController,
   adminLoginController,
 } from '../controllers/authController.js';
-import userAuth from '../middelwares/authMiddelware.js';
 import rateLimit from 'express-rate-limit';
 
 //ip limiter
@@ -20,7 +19,7 @@ const limiter = rateLimit({
 const router = express.Router();
 
 // Register route with userAuth middleware || POST
-router.post('/register', userAuth, limiter, registerController);
+router.post('/register', limiter, registerController);
 
 // Login route || POST
 router.post('/login', limiter, loginController);

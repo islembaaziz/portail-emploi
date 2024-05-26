@@ -8,9 +8,15 @@ import { hideLoading, showLoading } from '../redux/features/alertSlice';
 import { API } from '../constant';
 import Spinner from '../components/shared/Spinner';
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Register = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    lastName: '',
+    email: '',
+    password: '',
+    adresse: '',
+    role: 'User',
+  });
   const [errors, setErrors] = useState({});
   //hooks
   const navigate = useNavigate();
@@ -18,42 +24,44 @@ const Login = () => {
   // redux state
   const { loading } = useSelector((state) => state.alerts);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+    setErrors((prevState) => ({ ...prevState, [name]: '' }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validation
-    if (!email.trim()) {
-      setErrors((prevState) => ({
-        ...prevState,
-        email: 'Email est obligatoire !',
-      }));
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Le prénom est obligatoire !';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Le nom est obligatoire !';
+    if (!formData.email.trim()) newErrors.email = 'Email est obligatoire !';
+    if (!formData.password.trim() || formData.password.length < 6) {
+      newErrors.password = 'Mot de passe est obligatoire et doit contenir au moins 6 caractères !';
+    }
+    if (!formData.adresse.trim()) newErrors.adresse = 'L\'adresse est obligatoire !';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
-    if (!password.trim()) {
-      setErrors((prevState) => ({
-        ...prevState,
-        password: 'Mot de passe esr obligatoire !',
-      }));
-      return;
-    }
+
     try {
       dispatch(showLoading());
-      const { data } = await axios.post(`${API}/auth/login`, {
-        email,
-        password,
-      });
+      const { data } = await axios.post(`${API}/auth/register`, formData);
       if (data.success) {
         dispatch(hideLoading());
-        localStorage.setItem('token', data.token);
-        toast.success('Connecté avec succès ');
-        navigate('/');
-        window.location.reload();
+        toast.success('Inscription réussie');
+        navigate('/login');
       }
     } catch (error) {
       dispatch(hideLoading());
-      toast.error('Identifiant invalide, veuillez réessayer!');
+      toast.error(error.response?.data?.message || 'Erreur lors de l\'inscription, veuillez réessayer!');
       console.log(error);
     }
   };
+
   return (
     <>
       {loading ? (
@@ -78,46 +86,72 @@ const Login = () => {
 
                         <div>
                           <p className="mb-4">
-                            Veuillez vous connecter à votre compte
+                            Veuillez vous inscrire pour créer un compte
                           </p>
+                          {/* <!--Name input--> */}
+                          <input
+                            type="text"
+                            placeholder="Prénom"
+                            value={formData.name}
+                            onChange={handleChange}
+                            name="name"
+                            className="mb-4 rounded-md w-full border-solid border-2 border-gray-400"
+                          />
+                          {errors.name && <p className="text-red-500">{errors.name}</p>}
+
+                          {/* <!--LastName input--> */}
+                          <input
+                            type="text"
+                            placeholder="Nom"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            name="lastName"
+                            className="mb-4 rounded-md w-full border-solid border-2 border-gray-400"
+                          />
+                          {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
+
                           {/* <!--Email input--> */}
                           <input
                             type="email"
-                            placeholder=" Email"
-                            value={email}
-                            onChange={(e) => {
-                              setEmail(e.target.value);
-                              setErrors((prevState) => ({
-                                ...prevState,
-                                email: '',
-                              }));
-                            }}
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={handleChange}
                             name="email"
-                            className="mb-4 rounded-md w-full border-solid border-2  border-gray-400 "
+                            className="mb-4 rounded-md w-full border-solid border-2 border-gray-400"
                           />
-                          {errors.email && (
-                            <p className="text-red-500">{errors.email}</p>
-                          )}
+                          {errors.email && <p className="text-red-500">{errors.email}</p>}
+
                           {/* <!--Password input--> */}
                           <input
                             type="password"
-                            placeholder=" Mot de passe"
-                            value={password}
-                            onChange={(e) => {
-                              setPassword(e.target.value);
-                              setErrors((prevState) => ({
-                                ...prevState,
-                                password: '',
-                              }));
-                            }}
+                            placeholder="Mot de passe"
+                            value={formData.password}
+                            onChange={handleChange}
                             name="password"
                             className={`mb-4 rounded-md w-full border-solid border-2 border-gray-400 ${
                               errors.password ? 'border-red-500' : ''
                             }`}
                           />
-                          {errors.password && (
-                            <p className="text-red-500">{errors.password}</p>
-                          )}
+                          {errors.password && <p className="text-red-500">{errors.password}</p>}
+
+                          {/* <!--Adresse input--> */}
+                          <input
+                            type="text"
+                            placeholder="Adresse"
+                            value={formData.adresse}
+                            onChange={handleChange}
+                            name="adresse"
+                            className="mb-4 rounded-md w-full border-solid border-2 border-gray-400"
+                          />
+                          {errors.adresse && <p className="text-red-500">{errors.adresse}</p>}
+
+                          {/* <!--Role input (hidden)--> */}
+                          <input
+                            type="hidden"
+                            name="role"
+                            value={formData.role}
+                          />
+
                           {/* <!--Submit button--> */}
                           <div className="mb-12 pb-1 pt-1 text-center">
                             <button
@@ -128,11 +162,8 @@ const Login = () => {
                                   'linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593)',
                               }}
                             >
-                              Se Connecter
+                              S'inscrire
                             </button>
-
-                            {/* <!--Forgot password link--> */}
-                            <a className='text-blue-500 underline' href="/register">Créer une compte</a>
                           </div>
                         </div>
                       </div>
@@ -174,4 +205,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

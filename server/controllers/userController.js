@@ -1,6 +1,6 @@
 import userModel from '../models/userModel.js';
 import Application from '../models/applicationModel.js';
-import upload from '../middelwares/uploadMiddleware.js';
+
 
 export const updateUserController = async (req, res, next) => {
   try {
