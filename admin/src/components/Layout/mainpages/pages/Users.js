@@ -178,7 +178,7 @@ const Users = () => {
                   name: 'role',
                   label: 'Role',
                   type: 'select',
-                  enum: ['Admin', 'RH', 'User'],
+                  enum: ['Admin', 'RH', 'Candidat'],
                 },
               ].filter(Boolean)} // Remove null fields
               initialValues={currentUser}

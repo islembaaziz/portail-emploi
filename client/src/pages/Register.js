@@ -15,7 +15,7 @@ const Register = () => {
     email: '',
     password: '',
     adresse: '',
-    role: 'User',
+    role: 'Candidat',
   });
   const [errors, setErrors] = useState({});
   //hooks
