@@ -14,7 +14,7 @@ export const createJobController = async (req, res, next) => {
     }
 
     // Assuming the user ID is stored in `req.user` after authentication middleware
-    req.body.createdBy = req.user.userId;
+    req.body.createdBy = req.body.user.userId;
 
     const job = await jobsModel.create(req.body);
     res.status(201).json({ job });
