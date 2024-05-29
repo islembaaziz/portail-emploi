@@ -142,7 +142,7 @@ const Jobs = () => {
                 { name: 'company', label: 'Entreprise', type: 'text' },
                 { name: 'position', label: 'Position', type: 'text' },
                 { name: 'workLocation', label: 'Lieu de travail', type: 'text' },
-                { name: 'workType', label: 'Type de travail', type: 'select', enum: ['temps-plein', 'temps-partiel', 'stage', 'contaract', 'emplois-distance', 'emplois-saisonnier'] },
+                { name: 'workType', label: 'Type de travail', type: 'select', enum: ['temps-plein', 'temps-partiel', 'stage', 'contract', 'emplois-distance', 'emplois-saisonnier'] },
                 { name: 'description', label: 'Description', type: 'text' },
               ]}
               initialValues={currentJob}

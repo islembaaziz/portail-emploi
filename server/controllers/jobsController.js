@@ -6,11 +6,16 @@ import moment from 'moment';
 // ====== CREATE JOB ======
 export const createJobController = async (req, res, next) => {
   try {
-    const { company, position } = req.body;
-    if (!company || !position) {
-      throw new Error('Please provide all fields');
+    const { company, position, workType, workLocation, description } = req.body;
+
+    // Validate all required fields
+    if (!company || !position || !workType || !workLocation || !description) {
+      return res.status(400).json({ error: 'Please provide all required fields' });
     }
-    req.body.createdBy = req.body.user.userId;
+
+    // Assuming the user ID is stored in `req.user` after authentication middleware
+    req.body.createdBy = req.user.userId;
+
     const job = await jobsModel.create(req.body);
     res.status(201).json({ job });
   } catch (error) {
